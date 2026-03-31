@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>合租互助公约</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --primary: #FF8C69; --primary-light: #FFB347; --primary-bg: #FFF8F5;
+  --green: #52C41A; --green-bg: #F6FFED;
+  --red: #FF4D4F; --red-bg: #FFF1F0;
+  --text: #333; --text2: #888; --border: #F0EDE8;
+  --radius: 16px; --safe-bottom: env(safe-area-inset-bottom, 16px);
+}
+html,body { height:100%; background:var(--primary-bg); font-family:-apple-system,BlinkMacSystemFont,'PingFang SC',sans-serif; color:var(--text); overflow:hidden; }
+.page { display:none; height:100vh; flex-direction:column; overflow:hidden; }
+.page.active { display:flex; }
+.scroll { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-bottom:calc(90px + var(--safe-bottom)); }
+.bottom-bar { position:fixed; bottom:0; left:0; right:0; padding:12px 16px calc(12px + var(--safe-bottom)); background:white; border-top:1px solid var(--border); display:flex; gap:10px; z-index:50; }
+.btn { flex:1; padding:14px; border-radius:var(--radius); border:none; font-size:15px; font-weight:600; cursor:pointer; transition:opacity .15s,transform .1s; }
+.btn:active { opacity:.85; transform:scale(.97); }
+.btn-primary { background:var(--primary); color:white; }
+.btn-ghost { background:#FFF0EB; color:var(--primary); }
+.btn:disabled { opacity:.5; cursor:not-allowed; }
+.card { background:white; border-radius:var(--radius); box-shadow:0 2px 12px rgba(0,0,0,.05); overflow:hidden; margin-bottom:12px; }
+.section { padding:0 16px; margin-bottom:4px; }
+.section-title { font-size:12px; font-weight:600; color:var(--text2); letter-spacing:.5px; text-transform:uppercase; margin:16px 0 8px; }
+.form-row { display:flex; align-items:center; padding:15px 16px; border-bottom:1px solid var(--border); }
+.form-row:last-child { border-bottom:none; }
+.form-label { font-size:14px; color:var(--text2); width:72px; flex-shrink:0; }
+.form-value { flex:1; font-size:15px; color:var(--text); }
+.form-value.ph { color:#ccc; }
+.form-arrow { color:#ddd; font-size:18px; }
+
+/* P1 */
+#p1 { background:linear-gradient(160deg,#FF9A6C 0%,#FFD580 100%); align-items:center; justify-content:flex-start; padding-top:80px; }
+.p1-inner { width:100%; padding:0 28px; display:flex; flex-direction:column; align-items:center; }
+.p1-emoji { font-size:64px; margin-bottom:12px; }
+.p1-title { font-size:24px; font-weight:700; color:white; margin-bottom:6px; }
+.p1-sub { font-size:13px; color:rgba(255,255,255,.75); margin-bottom:36px; text-align:center; line-height:1.6; }
+.p1-name-wrap { width:100%; margin-bottom:24px; }
+.p1-input { width:100%; padding:15px 18px; background:rgba(255,255,255,.9); border:none; border-radius:14px; font-size:16px; font-family:inherit; color:var(--text); outline:none; }
+.p1-input::placeholder { color:#bbb; }
+.p1-btns { width:100%; display:flex; flex-direction:column; gap:12px; }
+.p1-btn { width:100%; padding:15px; border-radius:14px; border:none; font-size:16px; font-weight:600; cursor:pointer; transition:opacity .15s,transform .1s; }
+.p1-btn:active { opacity:.85; transform:scale(.97); }
+.p1-btn:disabled { opacity:.5; }
+.p1-btn-create { background:white; color:var(--primary); }
+.p1-btn-join { background:rgba(255,255,255,.25); color:white; border:1.5px solid rgba(255,255,255,.5); }
+
+/* P2 */
+.circle-hero { background:linear-gradient(135deg,#FF8C69,#FFB347); padding:20px 20px 28px; color:white; }
+.circle-hero-name { font-size:22px; font-weight:700; margin-bottom:8px; }
+.invite-chip { background:rgba(255,255,255,.25); padding:5px 12px; border-radius:20px; font-size:13px; display:inline-flex; align-items:center; gap:6px; }
+.copy-btn { background:rgba(255,255,255,.3); padding:2px 8px; border-radius:10px; font-size:11px; cursor:pointer; }
+.period-tabs { display:flex; gap:6px; padding:12px 16px 4px; }
+.period-tab { padding:6px 14px; border-radius:20px; font-size:13px; font-weight:600; background:white; color:var(--text2); border:none; cursor:pointer; transition:all .15s; }
+.period-tab.active { background:var(--primary); color:white; }
+.lb-item { display:flex; align-items:center; padding:14px 16px; border-bottom:1px solid var(--border); cursor:pointer; }
+.lb-item:last-child { border-bottom:none; }
+.lb-item:active { background:#fafafa; }
+.lb-rank { width:28px; height:28px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; margin-right:12px; flex-shrink:0; }
+.r1{background:#FFD700;color:white} .r2{background:#C0C0C0;color:white} .r3{background:#CD7F32;color:white} .rn{background:#f5f5f5;color:#aaa}
+.lb-avatar { width:40px; height:40px; border-radius:50%; background:#fce8df; display:flex; align-items:center; justify-content:center; font-size:20px; margin-right:12px; flex-shrink:0; }
+.lb-info { flex:1; }
+.lb-name { font-size:15px; font-weight:600; }
+.lb-sub { font-size:12px; color:var(--text2); margin-top:2px; }
+.lb-score { font-size:22px; font-weight:700; color:var(--primary); }
+.lb-score.neg { color:var(--red); }
+.rule-item { display:flex; align-items:center; padding:13px 16px; border-bottom:1px solid var(--border); }
+.rule-item:last-child { border-bottom:none; }
+.rule-dot { width:8px; height:8px; border-radius:50%; margin-right:12px; flex-shrink:0; }
+.rule-title { flex:1; font-size:14px; }
+.score-chips { display:flex; gap:6px; }
+.chip { font-size:12px; font-weight:600; padding:2px 9px; border-radius:20px; }
+.chip-pos { background:var(--green-bg); color:var(--green); }
+.chip-neg { background:var(--red-bg); color:var(--red); }
+
+/* P3 */
+.p3-top { background:linear-gradient(135deg,#FF8C69,#FFB347); padding:20px 16px 28px; color:white; }
+.type-row { display:flex; gap:10px; padding:16px 16px 4px; }
+.type-btn { flex:1; padding:16px 8px; border-radius:var(--radius); border:2px solid var(--border); text-align:center; cursor:pointer; transition:all .15s; background:white; }
+.type-btn .t-icon { font-size:26px; margin-bottom:4px; }
+.type-btn .t-label { font-size:14px; font-weight:600; color:var(--text2); }
+.type-btn.sel-comply { border-color:var(--green); background:var(--green-bg); }
+.type-btn.sel-comply .t-label { color:var(--green); }
+.type-btn.sel-violate { border-color:var(--red); background:var(--red-bg); }
+.type-btn.sel-violate .t-label { color:var(--red); }
+.note-ta { width:100%; padding:14px 16px; border:none; font-size:15px; font-family:inherit; resize:none; outline:none; min-height:80px; color:var(--text); background:transparent; }
+.note-ta::placeholder { color:#ccc; }
+
+/* P4 */
+.p4-top { background:linear-gradient(135deg,#FF8C69,#FFB347); padding:20px 16px 28px; color:white; }
+.score-type-tabs { display:flex; background:#f5f2ef; border-radius:12px; padding:4px; margin:0 16px 16px; }
+.stt { flex:1; padding:9px; border-radius:10px; text-align:center; font-size:14px; font-weight:600; cursor:pointer; color:var(--text2); transition:all .15s; }
+.stt.act-pos { background:white; color:var(--green); box-shadow:0 1px 4px rgba(0,0,0,.1); }
+.stt.act-neg { background:white; color:var(--red); box-shadow:0 1px 4px rgba(0,0,0,.1); }
+.score-disp { text-align:center; font-size:40px; font-weight:700; padding:12px 0 16px; }
+.score-disp.pos { color:var(--green); } .score-disp.neg { color:var(--red); }
+.score-pills { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:0 16px 16px; }
+.sp { padding:10px 4px; border-radius:10px; border:2px solid var(--border); text-align:center; font-size:14px; font-weight:600; color:var(--text2); cursor:pointer; transition:all .15s; }
+.sp.sel-pos { border-color:var(--green); background:var(--green-bg); color:var(--green); }
+.sp.sel-neg { border-color:var(--red); background:var(--red-bg); color:var(--red); }
+
+/* P5 */
+.history-hero { background:linear-gradient(135deg,#FF8C69,#FFB347); padding:20px; color:white; display:flex; align-items:center; gap:14px; }
+.history-av { width:54px; height:54px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; font-size:28px; }
+.tl { padding:16px; }
+.tl-item { display:flex; gap:12px; margin-bottom:8px; }
+.tl-dot-wrap { display:flex; flex-direction:column; align-items:center; }
+.tl-dot { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.tl-line { width:2px; flex:1; background:var(--border); margin:4px auto 0; min-height:16px; }
+.tl-card { flex:1; background:white; border-radius:12px; padding:12px 14px; box-shadow:0 1px 6px rgba(0,0,0,.05); margin-bottom:4px; }
+.tl-rule { font-size:14px; font-weight:600; margin-bottom:5px; }
+.tl-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.tl-badge { font-size:12px; padding:2px 8px; border-radius:10px; font-weight:600; }
+.tl-note { font-size:13px; color:var(--text2); margin-top:6px; }
+.tl-time,.tl-reporter { font-size:11px; color:#bbb; }
+
+/* Sheet */
+.sheet-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:200; align-items:flex-end; }
+.sheet-overlay.show { display:flex; }
+.sheet { width:100%; background:white; border-radius:20px 20px 0 0; padding:20px 0 calc(20px + var(--safe-bottom)); max-height:65vh; overflow-y:auto; }
+.sheet-title { text-align:center; font-size:13px; color:var(--text2); margin-bottom:10px; }
+.sheet-item { padding:14px 24px; font-size:16px; cursor:pointer; display:flex; align-items:center; gap:12px; }
+.sheet-item:active { background:#fafafa; }
+.sheet-item.sel { color:var(--primary); font-weight:600; }
+.sheet-cancel { width:calc(100% - 32px); margin:8px 16px 0; padding:14px; border-radius:14px; border:none; background:#f5f2ef; color:var(--text2); font-size:16px; cursor:pointer; }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:300; align-items:center; justify-content:center; padding:24px; }
+.modal-overlay.show { display:flex; }
+.modal { background:white; border-radius:20px; padding:28px 24px; width:100%; max-width:320px; }
+.modal-title { font-size:18px; font-weight:700; margin-bottom:6px; text-align:center; }
+.modal-sub { font-size:13px; color:var(--text2); text-align:center; margin-bottom:20px; }
+.modal-input { width:100%; padding:14px 16px; border:1.5px solid var(--border); border-radius:12px; font-size:20px; font-family:inherit; outline:none; text-align:center; letter-spacing:4px; font-weight:700; transition:border-color .15s; }
+.modal-input:focus { border-color:var(--primary); }
+.modal-btns { display:flex; gap:10px; margin-top:16px; }
+.modal-btn { flex:1; padding:13px; border-radius:12px; border:none; font-size:15px; font-weight:600; cursor:pointer; }
+.modal-btn-cancel { background:#f5f2ef; color:var(--text2); }
+.modal-btn-ok { background:var(--primary); color:white; }
+
+/* Loading */
+.loading { display:flex; align-items:center; justify-content:center; padding:32px; color:var(--text2); gap:8px; font-size:14px; }
+.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--primary); border-radius:50%; animation:spin .7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Toast */
+.toast { position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(12px); background:rgba(50,50,50,.85); color:white; padding:10px 20px; border-radius:20px; font-size:14px; opacity:0; transition:all .25s; pointer-events:none; white-space:nowrap; z-index:999; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+.empty { text-align:center; padding:40px 20px; color:#ccc; }
+.empty-icon { font-size:44px; margin-bottom:10px; }
+.empty p { font-size:14px; }
+.back-btn { width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.25); display:flex; align-items:center; justify-content:center; font-size:20px; color:white; cursor:pointer; flex-shrink:0; }
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- P1 Welcome -->
+<div class="page active" id="p1">
+  <div class="p1-inner">
+    <div class="p1-emoji">🏠</div>
+    <div class="p1-title">合租互助公约</div>
+    <div class="p1-sub">和室友、家人、爱人<br>一起制定共同守则</div>
+    <div class="p1-name-wrap">
+      <input class="p1-input" id="nickname-input" type="text" placeholder="输入你的昵称" maxlength="10">
+    </div>
+    <div class="p1-btns">
+      <button class="p1-btn p1-btn-create" id="btn-create" onclick="createCircle()">＋ 创建新圈子</button>
+      <button class="p1-btn p1-btn-join" id="btn-join" onclick="openJoinModal()">加入圈子 →</button>
+    </div>
+  </div>
+</div>
+
+<!-- P2 Circle Home -->
+<div class="page" id="p2">
+  <div class="scroll">
+    <div class="circle-hero">
+      <div class="circle-hero-name" id="circle-name-display">加载中...</div>
+      <div class="invite-chip">
+        邀请码：<strong id="circle-code-display">——</strong>
+        <span class="copy-btn" onclick="copyCode()">复制</span>
+      </div>
+    </div>
+    <div class="period-tabs">
+      <button class="period-tab active" onclick="setPeriod(this,'all')">全部</button>
+      <button class="period-tab" onclick="setPeriod(this,'day')">今日</button>
+      <button class="period-tab" onclick="setPeriod(this,'week')">本周</button>
+      <button class="period-tab" onclick="setPeriod(this,'month')">本月</button>
+    </div>
+    <div class="section">
+      <div class="section-title">🏆 积分榜</div>
+      <div class="card" id="leaderboard"><div class="loading"><div class="spinner"></div>加载中</div></div>
+    </div>
+    <div class="section">
+      <div class="section-title">📋 公约列表</div>
+      <div class="card" id="rules-list"><div class="loading"><div class="spinner"></div>加载中</div></div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-ghost" onclick="showPage('p4')">＋ 新增公约</button>
+    <button class="btn btn-primary" onclick="showPage('p3')">✍️ 记录行为</button>
+  </div>
+</div>
+
+<!-- P3 Record -->
+<div class="page" id="p3">
+  <div class="scroll">
+    <div class="p3-top">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div class="back-btn" onclick="showPage('p2')">‹</div>
+        <span style="font-size:17px;font-weight:600;color:white">记录行为</span>
+      </div>
+      <div style="font-size:13px;opacity:.8">记录守约或违约行为，积分实时更新</div>
+    </div>
+    <div class="section" style="margin-top:4px">
+      <div class="section-title">行为类型</div>
+      <div class="type-row">
+        <div class="type-btn" id="type-comply" onclick="selectType('comply')">
+          <div class="t-icon">✅</div><div class="t-label">守约</div>
+        </div>
+        <div class="type-btn" id="type-violate" onclick="selectType('violate')">
+          <div class="t-icon">❌</div><div class="t-label">违约</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">记录信息</div>
+      <div class="card">
+        <div class="form-row" onclick="openSheet('person')">
+          <span class="form-label">当事人</span>
+          <span class="form-value ph" id="rec-person">请选择成员</span>
+          <span class="form-arrow">›</span>
+        </div>
+        <div class="form-row" onclick="openSheet('rule')">
+          <span class="form-label">公约条目</span>
+          <span class="form-value ph" id="rec-rule">请选择公约</span>
+          <span class="form-arrow">›</span>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">备注（选填）</div>
+      <div class="card">
+        <textarea class="note-ta" id="rec-note" placeholder="说点什么..."></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" id="btn-submit-rec" onclick="submitRecord()">提交记录</button>
+  </div>
+</div>
+
+<!-- P4 Add Rule -->
+<div class="page" id="p4">
+  <div class="scroll">
+    <div class="p4-top">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div class="back-btn" onclick="showPage('p2')">‹</div>
+        <span style="font-size:17px;font-weight:600;color:white">新增公约</span>
+      </div>
+    </div>
+    <div class="section" style="margin-top:16px">
+      <div class="section-title">公约内容</div>
+      <div class="card">
+        <input type="text" id="rule-title" placeholder="输入公约标题，如「饭后洗碗」"
+          style="width:100%;padding:15px 16px;border:none;font-size:15px;font-family:inherit;outline:none;color:var(--text);background:transparent" maxlength="30">
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">分值设置</div>
+      <div class="score-type-tabs">
+        <div class="stt act-pos" id="stt-reward" onclick="setScoreType('reward')">🌟 守约奖励</div>
+        <div class="stt" id="stt-punish" onclick="setScoreType('punish')">💀 违约惩罚</div>
+      </div>
+      <div class="score-disp pos" id="score-disp">+3 分</div>
+      <div class="score-pills" id="score-pills"></div>
+    </div>
+  </div>
+  <div class="bottom-bar">
+    <button class="btn btn-primary" id="btn-submit-rule" onclick="submitRule()">添加公约</button>
+  </div>
+</div>
+
+<!-- P5 History -->
+<div class="page" id="p5">
+  <div class="scroll">
+    <div style="background:linear-gradient(135deg,#FF8C69,#FFB347);padding:16px 16px 0">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+        <div class="back-btn" onclick="showPage('p2')">‹</div>
+        <span style="font-size:17px;font-weight:600;color:white">行为记录</span>
+      </div>
+      <div class="history-hero" style="background:none;padding:0 0 20px">
+        <div class="history-av" id="history-av">😊</div>
+        <div>
+          <div style="font-size:20px;font-weight:700;color:white" id="history-name">-</div>
+          <div style="font-size:13px;opacity:.85;color:white;margin-top:3px" id="history-sc">当前积分：0</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl" id="timeline"></div>
+  </div>
+</div>
+
+<!-- Sheet -->
+<div class="sheet-overlay" id="sheet-overlay">
+  <div class="sheet">
+    <div class="sheet-title" id="sheet-title">请选择</div>
+    <div id="sheet-items"></div>
+    <button class="sheet-cancel" onclick="closeSheet()">取消</button>
+  </div>
+</div>
+
+<!-- Join Modal -->
+<div class="modal-overlay" id="join-modal">
+  <div class="modal">
+    <div class="modal-title">加入圈子</div>
+    <div class="modal-sub">输入朋友分享的邀请码</div>
+    <input class="modal-input" id="invite-input" type="text" placeholder="XXXXXX" maxlength="6">
+    <div class="modal-btns">
+      <button class="modal-btn modal-btn-cancel" onclick="closeJoinModal()">取消</button>
+      <button class="modal-btn modal-btn-ok" id="btn-join-ok" onclick="joinCircle()">加入</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══ Config ═══
+// 自动根据当前域名推断 API 地址，部署时无需修改
+const API = 'http://43.128.92.155:3000/api';
+const EMOJIS = ['🌸','😎','🐼','🦊','🐸','🌈','🎮','🦁','🐧','🌻','🍀','🦋'];
+
+// ═══ State ═══
+let s = {
+  nickname: '', emoji: '',
+  myId: null, circleId: null, inviteCode: null,
+  members: [], rules: [],
+};
+let draft = { type: null, personId: null, ruleId: null, scoreType: 'reward', scoreVal: 3 };
+let currentPeriod = 'all';
+let historyMemberId = null;
+
+// ═══ Storage ═══
+function saveSession() {
+  localStorage.setItem('covenant_session', JSON.stringify({
+    myId: s.myId, circleId: s.circleId, inviteCode: s.inviteCode,
+    nickname: s.nickname, emoji: s.emoji,
+  }));
+}
+function loadSession() {
+  try {
+    const d = JSON.parse(localStorage.getItem('covenant_session') || 'null');
+    if (d && d.myId) { Object.assign(s, d); return true; }
+  } catch(e) {}
+  return false;
+}
+
+// ═══ Init ═══
+(async function init() {
+  if (loadSession()) {
+    await refreshCircle();
+    showPage('p2');
+  }
+  renderScoreUI();
+})();
+
+// ═══ API helpers ═══
+async function api(method, path, body) {
+  const res = await fetch(API + path, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '请求失败');
+  return data;
+}
+
+// ═══ Page nav ═══
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'p2') refreshCircle();
+  if (id === 'p3') resetRecord();
+  if (id === 'p4') resetRule();
+}
+
+// ═══ P1 ═══
+function setLoading(ids, loading) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.disabled = loading;
+  });
+}
+
+async function createCircle() {
+  const name = document.getElementById('nickname-input').value.trim();
+  if (!name) { showToast('请先输入昵称'); return; }
+  setLoading(['btn-create','btn-join'], true);
+  try {
+    s.nickname = name;
+    s.emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    const data = await api('POST', '/circles', {
+      circleName: name + '的小窝 🏡',
+      nickname: name, emoji: s.emoji,
+    });
+    s.myId = data.memberId;
+    s.circleId = data.circleId;
+    s.inviteCode = data.inviteCode;
+    saveSession();
+    showPage('p2');
+    showToast('圈子创建成功！分享邀请码给朋友吧 🎉');
+  } catch(e) { showToast('创建失败：' + e.message); }
+  finally { setLoading(['btn-create','btn-join'], false); }
+}
+
+function openJoinModal() {
+  const name = document.getElementById('nickname-input').value.trim();
+  if (!name) { showToast('请先输入昵称'); return; }
+  document.getElementById('invite-input').value = '';
+  document.getElementById('join-modal').classList.add('show');
+  setTimeout(() => document.getElementById('invite-input').focus(), 200);
+}
+function closeJoinModal() { document.getElementById('join-modal').classList.remove('show'); }
+
+async function joinCircle() {
+  const name = document.getElementById('nickname-input').value.trim() || s.nickname;
+  const code = document.getElementById('invite-input').value.trim().toUpperCase();
+  if (!code) { showToast('请输入邀请码'); return; }
+  document.getElementById('btn-join-ok').disabled = true;
+  try {
+    s.nickname = name;
+    s.emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+    const data = await api('POST', '/circles/join', { inviteCode: code, nickname: name, emoji: s.emoji });
+    s.myId = data.memberId;
+    s.circleId = data.circleId;
+    s.inviteCode = data.inviteCode;
+    saveSession();
+    closeJoinModal();
+    showPage('p2');
+    showToast('成功加入圈子！👋');
+  } catch(e) { showToast('加入失败：' + e.message); }
+  finally { document.getElementById('btn-join-ok').disabled = false; }
+}
+
+// ═══ P2 ═══
+async function refreshCircle() {
+  if (!s.inviteCode) return;
+  try {
+    const data = await api('GET', `/circles/${s.inviteCode}`);
+    s.members = data.members;
+    s.rules = data.rules;
+    document.getElementById('circle-name-display').textContent = data.circle.name;
+    document.getElementById('circle-code-display').textContent = data.circle.invite_code;
+    await renderLeaderboard();
+    renderRules();
+  } catch(e) { showToast('加载失败：' + e.message); }
+}
+
+function setPeriod(el, period) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentPeriod = period;
+  renderLeaderboard();
+}
+
+async function renderLeaderboard() {
+  const lb = document.getElementById('leaderboard');
+  lb.innerHTML = '<div class="loading"><div class="spinner"></div>加载中</div>';
+  try {
+    const data = await api('GET', `/circles/${s.inviteCode}/leaderboard?period=${currentPeriod}`);
+    const list = data.leaderboard;
+    if (!list.length) { lb.innerHTML = empty('👥', '还没有成员'); return; }
+    lb.innerHTML = list.map((m, i) => {
+      const rc = ['r1','r2','r3','rn'][Math.min(i,3)];
+      const rl = i < 3 ? ['🥇','🥈','🥉'][i] : i + 1;
+      return `<div class="lb-item" onclick="showHistory('${m.id}')">
+        <div class="lb-rank ${rc}">${rl}</div>
+        <div class="lb-avatar">${m.emoji}</div>
+        <div class="lb-info">
+          <div class="lb-name">${m.nickname}</div>
+          <div class="lb-sub">${m.recordCount} 条记录</div>
+        </div>
+        <div class="lb-score${m.score < 0 ? ' neg' : ''}">${m.score > 0 ? '+' : ''}${m.score}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { lb.innerHTML = empty('⚠️', '加载失败'); }
+}
+
+function renderRules() {
+  const rl = document.getElementById('rules-list');
+  if (!s.rules.length) { rl.innerHTML = empty('📋', '还没有公约，先添加一条吧'); return; }
+  const colors = ['#FF8C69','#52C41A','#FF4D4F','#FF9800','#2196F3','#9C27B0'];
+  rl.innerHTML = s.rules.map((r, i) =>
+    `<div class="rule-item">
+      <div class="rule-dot" style="background:${colors[i % colors.length]}"></div>
+      <span class="rule-title">${r.title}</span>
+      <div class="score-chips">
+        <span class="chip chip-pos">+${r.reward}</span>
+        <span class="chip chip-neg">${r.punish}</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function copyCode() {
+  const code = s.inviteCode || '';
+  if (navigator.clipboard) navigator.clipboard.writeText(code).catch(() => {});
+  showToast('邀请码已复制：' + code);
+}
+
+// ═══ P3 ═══
+function resetRecord() {
+  draft.type = null; draft.personId = null; draft.ruleId = null;
+  document.getElementById('type-comply').className = 'type-btn';
+  document.getElementById('type-violate').className = 'type-btn';
+  setEl('rec-person', '请选择成员', 'ph');
+  setEl('rec-rule', '请选择公约', 'ph');
+  document.getElementById('rec-note').value = '';
+}
+
+function selectType(t) {
+  draft.type = t;
+  document.getElementById('type-comply').className = 'type-btn' + (t === 'comply' ? ' sel-comply' : '');
+  document.getElementById('type-violate').className = 'type-btn' + (t === 'violate' ? ' sel-violate' : '');
+  if (draft.ruleId) {
+    const rule = s.rules.find(r => r.id === draft.ruleId);
+    if (rule) updateRuleLabel(rule);
+  }
+}
+
+function updateRuleLabel(rule) {
+  const score = draft.type === 'comply' ? '+' + rule.reward : '' + rule.punish;
+  setEl('rec-rule', rule.title + '（' + score + '分）', '');
+}
+
+let sheetTarget = null;
+function openSheet(target) {
+  sheetTarget = target;
+  const title = document.getElementById('sheet-title');
+  const items = document.getElementById('sheet-items');
+  if (target === 'person') {
+    title.textContent = '选择当事人';
+    items.innerHTML = s.members.map(m =>
+      `<div class="sheet-item${draft.personId === m.id ? ' sel' : ''}" onclick="pickItem('person','${m.id}','${m.nickname}','${m.emoji}')">
+        <span>${m.emoji}</span><span>${m.nickname}</span>
+      </div>`).join('');
+  } else {
+    title.textContent = '选择公约条目';
+    if (!s.rules.length) { items.innerHTML = '<div style="padding:20px;text-align:center;color:#bbb">还没有公约</div>'; }
+    else {
+      items.innerHTML = s.rules.map(r => {
+        const score = draft.type === 'comply' ? '+' + r.reward : (draft.type === 'violate' ? '' + r.punish : '+' + r.reward + '/' + r.punish);
+        const icon = draft.type === 'comply' ? '🌟' : (draft.type === 'violate' ? '💀' : '📌');
+        return `<div class="sheet-item${draft.ruleId === r.id ? ' sel' : ''}" onclick="pickItem('rule','${r.id}','${r.title}','')">
+          <span>${icon}</span><span>${r.title}（${score}分）</span>
+        </div>`;
+      }).join('');
+    }
+  }
+  document.getElementById('sheet-overlay').classList.add('show');
+}
+
+function pickItem(type, id, label, emoji) {
+  if (type === 'person') {
+    draft.personId = id;
+    setEl('rec-person', emoji + ' ' + label, '');
+  } else {
+    draft.ruleId = id;
+    const rule = s.rules.find(r => r.id === id);
+    if (rule) updateRuleLabel(rule);
+  }
+  closeSheet();
+}
+function closeSheet() { document.getElementById('sheet-overlay').classList.remove('show'); }
+
+async function submitRecord() {
+  if (!draft.type) { showToast('请选择行为类型'); return; }
+  if (!draft.personId) { showToast('请选择当事人'); return; }
+  if (!draft.ruleId) { showToast('请选择公约条目'); return; }
+  const btn = document.getElementById('btn-submit-rec');
+  btn.disabled = true;
+  try {
+    await api('POST', '/records', {
+      circleId: s.circleId, ruleId: draft.ruleId,
+      reporterId: s.myId, targetId: draft.personId,
+      type: draft.type, note: document.getElementById('rec-note').value.trim(),
+    });
+    showPage('p2');
+    showToast(draft.type === 'comply' ? '✅ 守约记录已提交！' : '❌ 违约记录已提交！');
+  } catch(e) { showToast('提交失败：' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ═══ P4 ═══
+function resetRule() {
+  draft.scoreType = 'reward'; draft.scoreVal = 3;
+  document.getElementById('rule-title').value = '';
+  renderScoreUI();
+}
+function setScoreType(t) { draft.scoreType = t; draft.scoreVal = 3; renderScoreUI(); }
+function renderScoreUI() {
+  const isR = draft.scoreType === 'reward';
+  document.getElementById('stt-reward').className = 'stt' + (isR ? ' act-pos' : '');
+  document.getElementById('stt-punish').className = 'stt' + (!isR ? ' act-neg' : '');
+  const disp = document.getElementById('score-disp');
+  disp.className = 'score-disp ' + (isR ? 'pos' : 'neg');
+  disp.textContent = (isR ? '+' : '-') + draft.scoreVal + ' 分';
+  document.getElementById('score-pills').innerHTML = [1,2,3,5,10].map(v =>
+    `<div class="sp${v === draft.scoreVal ? (isR ? ' sel-pos' : ' sel-neg') : ''}" onclick="setScore(${v})">${v}</div>`
+  ).join('');
+}
+function setScore(v) { draft.scoreVal = v; renderScoreUI(); }
+
+async function submitRule() {
+  const title = document.getElementById('rule-title').value.trim();
+  if (!title) { showToast('请输入公约标题'); return; }
+  const btn = document.getElementById('btn-submit-rule');
+  btn.disabled = true;
+  try {
+    const v = draft.scoreVal;
+    await api('POST', '/rules', {
+      circleId: s.circleId, memberId: s.myId,
+      title, reward: v, punish: -v,
+    });
+    showPage('p2');
+    showToast('✅ 公约「' + title + '」已添加！');
+  } catch(e) { showToast('添加失败：' + e.message); }
+  finally { btn.disabled = false; }
+}
+
+// ═══ P5 ═══
+async function showHistory(memberId) {
+  historyMemberId = memberId;
+  const m = s.members.find(x => x.id === memberId);
+  document.getElementById('history-av').textContent = m.emoji;
+  document.getElementById('history-name').textContent = m.nickname;
+  document.getElementById('history-sc').textContent = '加载中...';
+  document.getElementById('timeline').innerHTML = '<div class="loading"><div class="spinner"></div>加载中</div>';
+  showPage('p5');
+  try {
+    const data = await api('GET', `/members/${memberId}/records`);
+    const score = data.records.reduce((sum, r) => sum + (r.type === 'comply' ? r.reward : r.punish), 0);
+    document.getElementById('history-sc').textContent = '当前积分：' + (score > 0 ? '+' : '') + score;
+    const tl = document.getElementById('timeline');
+    if (!data.records.length) { tl.innerHTML = empty('🕊️', '暂无记录'); return; }
+    tl.innerHTML = data.records.map((rec, i) => {
+      const isC = rec.type === 'comply';
+      const delta = isC ? '+' + rec.reward : '' + rec.punish;
+      return `<div class="tl-item">
+        <div class="tl-dot-wrap">
+          <div class="tl-dot">${isC ? '✅' : '❌'}</div>
+          ${i < data.records.length - 1 ? '<div class="tl-line"></div>' : ''}
+        </div>
+        <div class="tl-card">
+          <div class="tl-rule">${rec.rule_title}</div>
+          <div class="tl-meta">
+            <span class="tl-badge ${isC ? 'chip-pos' : 'chip-neg'}">${isC ? '守约' : '违约'} ${delta}分</span>
+            <span class="tl-time">${fmtTime(rec.created_at)}</span>
+          </div>
+          ${rec.note ? `<div class="tl-note">💬 ${rec.note}</div>` : ''}
+          <div class="tl-reporter">记录人：${rec.reporter_name}</div>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    document.getElementById('history-sc').textContent = '加载失败';
+    document.getElementById('timeline').innerHTML = empty('⚠️', '加载失败');
+  }
+}
+
+// ═══ Utils ═══
+function fmtTime(ts) {
+  const d = Date.now() - ts;
+  if (d < 60000) return '刚刚';
+  if (d < 3600000) return Math.floor(d / 60000) + '分钟前';
+  if (d < 86400000) return Math.floor(d / 3600000) + '小时前';
+  return Math.floor(d / 86400000) + '天前';
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+function setEl(id, text, cls) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'form-value' + (cls ? ' ' + cls : '');
+}
+function empty(icon, text) {
+  return `<div class="empty"><div class="empty-icon">${icon}</div><p>${text}</p></div>`;
+}
+</script>
+</body>
+</html>
