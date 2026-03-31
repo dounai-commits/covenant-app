@@ -1,0 +1,15 @@
+{
+  "name": "covenant-server",
+  "version": "1.0.0",
+  "description": "合租互助公约后台",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  }
+}
